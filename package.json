@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Sheikhatiff/mern-notification#readme",
   "dependencies": {
+    "@huggingface/inference": "^4.13.3",
     "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
