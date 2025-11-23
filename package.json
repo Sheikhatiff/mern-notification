@@ -1,0 +1,35 @@
+{
+  "name": "mern-notification",
+  "version": "1.0.0",
+  "description": "A simple exercise to implement notifications using mern stack",
+  "main": "server.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon backend/server.js",
+    "start": "cross-env NODE_ENV=production node backend/server.js",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sheikhatiff/mern-notification.git"
+  },
+  "author": "Sheikh Atif",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Sheikhatiff/mern-notification/issues"
+  },
+  "homepage": "https://github.com/Sheikhatiff/mern-notification#readme",
+  "dependencies": {
+    "@huggingface/inference": "^4.13.3",
+    "cors": "^2.8.5",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
+    "mongoose": "^8.20.0",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
