@@ -19,7 +19,7 @@ process.on("uncaughtException", (err) => {
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
-const ENVIRONMENT = process.env.NODE_ENV || "development";
+const ENVIRONMENT = process.env.VITE_NODE_ENV || "development";
 
 // Create HTTP server with Socket.IO
 const httpServer = createServer(app);

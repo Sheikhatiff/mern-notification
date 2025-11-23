@@ -4,8 +4,8 @@
   "description": "A simple exercise to implement notifications using mern stack",
   "main": "server.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon backend/server.js",
-    "start": "cross-env NODE_ENV=production node backend/server.js",
+    "dev": "cross-env VITE_NODE_ENV=development nodemon backend/server.js",
+    "start": "cross-env VITE_NODE_ENV=production node backend/server.js",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "repository": {
