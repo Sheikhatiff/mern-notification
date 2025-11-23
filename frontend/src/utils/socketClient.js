@@ -1,7 +1,10 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
+const SOCKET_URL = `${
+  import.meta.env.VITE_NODE_ENV === "development"
+    ? `${import.meta.env.VITE_API_URL || "http://localhost:3000"}`
+    : import.meta.env.VITE_CLIENT_URL
+}`;
 let socket = null;
 
 /**
