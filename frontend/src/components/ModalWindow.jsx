@@ -9,6 +9,7 @@ function ModalWindow({
   onClose,
   permission = false,
   onSure,
+  isDeleting = false,
 }) {
   return (
     <div className="absolute inset-0 flex justify-center items-center h-100 m-4 p-8 sm:px-20 bg-stone-950/90">
@@ -41,17 +42,19 @@ function ModalWindow({
 
             <div className="text-xl text-stone-300 font-medium flex justify-between mt-8">
               <button
-                className="border border-stone-500 rounded-full px-3 sm:px-5 py-1 hover:bg-stone-700 hover:text-white transition"
+                className="border border-stone-500 rounded-full px-3 sm:px-5 py-1 hover:bg-stone-700 hover:text-white transition disabled:opacity-50"
                 onClick={onClose}
+                disabled={isDeleting}
               >
                 Cancel
               </button>
 
               <button
-                className="border border-red-500 rounded-full px-3 sm:px-5 py-1 text-red-400 hover:bg-red-600 hover:text-white transition"
+                className="border border-red-500 rounded-full px-3 sm:px-5 py-1 text-red-400 hover:bg-red-600 hover:text-white transition disabled:opacity-50"
                 onClick={onSure}
+                disabled={isDeleting}
               >
-                Sure
+                {isDeleting ? "Deleting..." : "Sure"}
               </button>
             </div>
           </>

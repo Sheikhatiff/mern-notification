@@ -1,31 +1,59 @@
 import { ChevronUp, Send } from "lucide-react";
 import React, { useState } from "react";
 import { Form } from "react-router-dom";
+import { entryAPI, handleApiError } from "../../utils/api";
 
-function EntryForm({ setOpenForm, setEntries }) {
+function EntryForm({ setOpenForm, fetchEntries }) {
   const [entry, setEntry] = useState("");
   const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const dataObject = Object.fromEntries(formData.entries());
-    console.log("Form Data Object:", dataObject);
-    if (!dataObject.title) dataObject.title = "new-" + Date.now();
-    setEntries((val) => [dataObject, ...val]);
-    setEntry("");
-    setOpenForm((val) => !val);
+
+    if (!entry.trim()) {
+      setError("Entry text is required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const entryData = {
+        title: title.trim() || `Entry ${new Date().toLocaleDateString()}`,
+        text: entry.trim(),
+      };
+
+      const response = await entryAPI.create(entryData);
+
+      if (response.data.success) {
+        setEntry("");
+        setTitle("");
+        setOpenForm(false);
+        // Fetch updated entries from backend
+        if (fetchEntries) {
+          await fetchEntries();
+        }
+      }
+      setOpenForm((v) => !v);
+    } catch (err) {
+      const errorMsg = handleApiError(err);
+      setError(errorMsg);
+      console.error("Error creating entry:", err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <Form
-      method="POST"
-      className="p-4 flex flex-col gap-3"
-      onSubmit={handleSubmit}
-    >
-      {/* <label htmlFor="entry" className=" font-medium text-xl">
-        Write:
-      </label> */}
+    <Form className="p-4 flex flex-col gap-3" onSubmit={handleSubmit}>
+      {error && (
+        <div className="bg-red-900 text-red-200 p-2 rounded text-sm">
+          {error}
+        </div>
+      )}
       <button type="button" onClick={() => setOpenForm((val) => !val)}>
         <ChevronUp />
       </button>
@@ -33,11 +61,10 @@ function EntryForm({ setOpenForm, setEntries }) {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title"
+        placeholder="Title (optional)"
         className="w-full p-3 rounded-lg bg-stone-800 text-sm sm:text-xl  border-2 border-stone-800 focus:border-stone-700 focus:outline-none resize-none"
       />
       <textarea
-        name="entry"
         autoFocus
         rows="2"
         value={entry}
@@ -46,13 +73,14 @@ function EntryForm({ setOpenForm, setEntries }) {
         required
         className="w-full p-3 rounded-lg bg-stone-800 text-sm sm:text-xl  border-2 border-stone-800 focus:border-stone-700 focus:outline-none resize-none"
       ></textarea>
-      <input type="hidden" name="id" value={new Date()} />
       <button
         type="submit"
-        // disabled={entry === ""}
-        className=" hover:bg-stone-700 border-2 border-stone-700 text-xl font-semibold py-2 px-4 rounded-lg transition-colors duration-200 w-full sm:w-auto flex justify-center gap-2"
+        disabled={loading}
+        className={`hover:bg-stone-700 border-2 border-stone-700 text-xl font-semibold py-2 px-4 rounded-lg transition-colors duration-200 w-full sm:w-auto flex justify-center gap-2 ${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+        }`}
       >
-        Send <Send />
+        {loading ? "Sending..." : "Send"} <Send />
       </button>
     </Form>
   );
