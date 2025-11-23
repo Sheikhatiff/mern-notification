@@ -13,7 +13,7 @@ const ENVIRONMENT = process.env.NODE_ENV || "development";
 
 // CORS Configuration
 const corsOptions = {
-  origin: origin: [
+  origin: [
       process.env.FRONTEND_URL || "http://localhost:5173",
       process.env.CLIENT_URL || "http://localhost:5173",
     ],
