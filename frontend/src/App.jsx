@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./pages/AppLayout";
@@ -6,6 +6,7 @@ import Loader from "./components/Loader";
 import Error from "./components/Error";
 import PageNotFound from "./components/PageNotFound";
 import ReportPage from "./pages/ReportPage";
+import { initializeSocket, disconnectSocket } from "./utils/socketClient";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const NotificationPage = lazy(() => import("./pages/NotificationPage"));
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
         element: <NotificationPage />,
       },
       {
-        path: "/all-notifications/repor t/:title",
+        path: "/all-notifications/report/:title",
         element: <ReportPage />,
       },
       {
@@ -34,7 +35,18 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
 function App() {
+  useEffect(() => {
+    // Initialize Socket.IO connection when app mounts
+    initializeSocket();
+
+    // Cleanup on unmount
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
+
   return (
     <Suspense fallback={<Loader />}>
       <RouterProvider router={router} />
