@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.get("/", (_, res) => {
+app.get("/api", (_, res) => {
   res.send(
     `Server started running at http://localhost:${PORT} at ${ENVIRONMENT} mode.`
   );
