@@ -1,10 +1,11 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = `${
+const SOCKET_URL =
   import.meta.env.VITE_NODE_ENV === "development"
-    ? `${import.meta.env.VITE_API_URL || "http://localhost:3000"}`
-    : import.meta.env.VITE_CLIENT_URL
-}`;
+    ? import.meta.env.VITE_API_URL || "http://localhost:3000"
+    : import.meta.env.VITE_CLIENT_URL ||
+      "https://mern-notification-sd1g.onrender.com";
+
 let socket = null;
 
 /**
