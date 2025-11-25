@@ -1,9 +1,15 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const ENVIRONMENT = import.meta.env.VITE_NODE_ENV;
+
+const BASE_URL =
+  ENVIRONMENT === "development"
+    ? import.meta.env.VITE_API_URL || "http://localhost:3000"
+    : import.meta.env.VITE_CLIENT_URL ||
+      "https://mern-notification-sd1g.onrender.com";
 
 const api = axios.create({
-  baseURL: `${API_URL}/api/v1`,
+  baseURL: `${BASE_URL}/api/v1`,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
