@@ -34,6 +34,8 @@ const processEmotions = (emotionArray) => {
 
 // Create a new entry and analyze sentiment
 export const createEntry = catchAsync(async (req, res, next) => {
+  console.log("📝 Creating entry - Request body:", req.body);
+
   const { title, text } = req.body;
 
   if (!text || text.trim().length === 0) {
@@ -43,26 +45,31 @@ export const createEntry = catchAsync(async (req, res, next) => {
   let primaryEmotion = "neutral";
   let emotionScores = [{ label: "neutral", score: 1 }];
 
+  console.log("🔍 Analyzing text...");
   const analysisResult = await analyzeText(text).catch((error) => {
-    console.error("Text analysis failed:", error.message);
+    console.error("❌ Text analysis failed:", error.message);
     return null;
   });
 
   if (analysisResult) {
+    console.log("✅ Analysis result:", analysisResult);
     const processed = processEmotions(analysisResult);
     primaryEmotion = processed.primaryEmotion;
     emotionScores = processed.emotionScores;
+  } else {
+    console.warn("⚠️ Using fallback neutral sentiment");
   }
 
-  // Create entry with emotion scores
+  console.log("💾 Creating entry in database...");
   const entry = await Entry.create({
     title: title || `new-${Date.now()}`,
     text,
     primaryEmotion,
     emotionScores,
   });
+  console.log("✅ Entry created:", entry._id);
 
-  // Create notification for sentiment
+  console.log("🔔 Creating notification...");
   const notification = await Notification.create({
     entryId: entry._id,
     title: entry.title,
@@ -71,9 +78,11 @@ export const createEntry = catchAsync(async (req, res, next) => {
     emotionScores,
     type: "sentiment",
   });
+  console.log("✅ Notification created:", notification._id);
 
-  // Emit real-time notification to all connected clients
+  // Emit real-time notification
   if (global.io) {
+    console.log("📡 Emitting socket event...");
     emitNewEntry(global.io, entry, notification);
   }
 
